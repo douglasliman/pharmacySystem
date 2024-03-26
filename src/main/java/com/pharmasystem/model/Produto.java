@@ -3,6 +3,7 @@ package com.pharmasystem.model;
 import java.math.BigDecimal;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.generation.blogPessoal.model.Tema;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -44,7 +45,10 @@ public class Produto {
 	@ManyToOne
 	@JsonIgnoreProperties("produto")
 	private Categoria categoria;
-
+	
+	@ManyToOne 
+	@JsonIgnoreProperties("produto")
+	private Usuario usuario;
 	public Long getId() {
 		return id;
 	}
