@@ -18,59 +18,64 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.pharmasystem.model.Categoria;
-import com.pharmasystem.repository.CategoriaRepository;
+import com.pharmasystem.model.Produto;
+import com.pharmasystem.repository.ProdutoRepository;
 
 import jakarta.validation.Valid;
 
+
+
 @RestController
-@RequestMapping("/categoria")
+@RequestMapping("/produto")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-public class CategoriaController {
+public class ProdutoController {
 
 	@Autowired
-	private CategoriaRepository categoriaRepository;
+	private ProdutoRepository produtoRepository;
+	
+	
 
 	@GetMapping("/all")
-	public ResponseEntity<List<Categoria>> getAll() {
-		return ResponseEntity.ok(categoriaRepository.findAll());
+	public ResponseEntity<List<Produto>> getAll() {
+		return ResponseEntity.ok(produtoRepository.findAll());
 	}
-
+	
 	@GetMapping("/{id}")
-	public ResponseEntity<Categoria> getCategoriaPorId(@PathVariable Long id) {
-		return categoriaRepository.findById(id).map(resposta -> ResponseEntity.ok(resposta))
+	public ResponseEntity<Produto> getProdutoPorId(@PathVariable Long id){
+		return produtoRepository.findById(id).map(resposta ->  ResponseEntity.ok(resposta))
 				.orElse(ResponseEntity.notFound().build());
+		
 	}
-
+	
 	@PostMapping("/create")
-	public ResponseEntity<Categoria> createCategoria(@Valid @RequestBody Categoria newCategoria) {
-		Categoria CategoriaNovo = categoriaRepository.save(newCategoria);
-		return ResponseEntity.status(HttpStatus.CREATED).body(CategoriaNovo);
+	public ResponseEntity<Produto> createProduto(@Valid @RequestBody Produto newProduto){
+			return ResponseEntity.status(HttpStatus.CREATED).body(produtoRepository.save(newProduto));
 	}
-
+	
 	@PutMapping("/update")
-	public ResponseEntity<Categoria> put(@Valid @RequestBody Categoria updatedCategoria) {
-
-		Categoria CategoriaUpdated = categoriaRepository.save(updatedCategoria);
-		return categoriaRepository.findById(updatedCategoria.getId())
-				.map(resposta -> ResponseEntity.status(HttpStatus.CREATED).body(CategoriaUpdated))
+	public ResponseEntity<Produto> put(@Valid @RequestBody Produto updatedProduto){
+		
+		Produto produtoUpdated = produtoRepository.save(updatedProduto);
+		return produtoRepository.findById(updatedProduto.getId())
+				.map(resposta -> ResponseEntity.status(HttpStatus.CREATED)
+						.body(produtoUpdated))
 				.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 	}
-
+	
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping("/delete/{id}")
 	public void delete(@PathVariable Long id) {
-		Optional<Categoria> Categoria = categoriaRepository.findById(id);
-
-		if (Categoria.isEmpty()) {
+		Optional<Produto> produto = produtoRepository.findById(id);
+		
+		if (produto.isEmpty()) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 		}
-		categoriaRepository.deleteById(id);
+		produtoRepository.deleteById(id);
 	}
-
+	
 	@GetMapping("/name/{nome}")
-	public ResponseEntity<List<Categoria>> getProdutoPorNome(@Valid @PathVariable String nome) {
-		return ResponseEntity.ok(categoriaRepository.findAllByNomeContainingIgnoreCase(nome));
+	public ResponseEntity<List<Produto>> getProdutoPorNome(@Valid @PathVariable String nome){
+		return ResponseEntity.ok(produtoRepository.findAllByNomeContainingIgnoreCase(nome));
 	}
-
+	
 }
